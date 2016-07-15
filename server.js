@@ -29,12 +29,36 @@ app.get('/search/:name', function(req, res) {
 
     searchReq.on('end', function(item) {
         var artist = item.artists.items[0];
-        res.json(artist);
+        var id = artist.id
+        var relatedArtists = getFromApi('artists/' + id + '/related-artists');
+        relatedArtists.on('end', function(item) {
+            artist.related = item.artists;
+                console.log(artist);
+                res.json(artist);
+        });
+        relatedArtists.on('error', function(code) {
+            res.sendStatus(code);
+        });
     });
 
     searchReq.on('error', function(code) {
         res.sendStatus(code);
     });
+
 });
 
+
+
+// .then(app.get('/artists/' + id + '/related-artists', function(request, response) {
+//     consle.log(response);
+// }));
+        // var relatedReq = getFromApi('artists', {
+        //     q: id,
+        //     limit: 1,
+        //     type: 'id'
+        // }, 'related-artists' );
+
+        // relatedReq.on('end', function(result) {
+        //     console.log(result);
+        // });
 app.listen(8080);

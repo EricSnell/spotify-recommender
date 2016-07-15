@@ -1,15 +1,24 @@
 {
   "name": "spotify-recommend",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.14.0",
     "unirest": "^0.5.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EricSnell/spotify-recommender.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EricSnell/spotify-recommender/issues"
+  },
+  "homepage": "https://github.com/EricSnell/spotify-recommender#readme",
+  "description": ""
 }
