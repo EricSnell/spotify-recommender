@@ -30,15 +30,35 @@ app.get('/search/:name', function(req, res) {
     searchReq.on('end', function(item) {
         var artist = item.artists.items[0];
         var id = artist.id
+        var completed = 0;
         var relatedArtists = getFromApi('artists/' + id + '/related-artists');
         relatedArtists.on('end', function(item) {
             artist.related = item.artists;
-                console.log(artist);
-                res.json(artist);
+            artist.related.forEach(function(result) {
+                var artistId = result.id;
+                var topTracks = getFromApi('artists/' + artistId + '/top-tracks', {
+                    country: 'AU'
+                });
+                topTracks.on('end', function(item) {
+                    result.tracks = item.tracks;
+                    completed++;
+                    if (completed === artist.related.length) {
+                        console.log('yay');
+                        res.json(artist);
+                    }                         
+                });
+                topTracks.on('error', function(code) {
+                    console.log('top tracks error code: ',code);
+                    // This is bad
+                    res.sendStatus(code);
+                });
+            });
         });
         relatedArtists.on('error', function(code) {
             res.sendStatus(code);
         });
+
+
     });
 
     searchReq.on('error', function(code) {
@@ -47,18 +67,4 @@ app.get('/search/:name', function(req, res) {
 
 });
 
-
-
-// .then(app.get('/artists/' + id + '/related-artists', function(request, response) {
-//     consle.log(response);
-// }));
-        // var relatedReq = getFromApi('artists', {
-        //     q: id,
-        //     limit: 1,
-        //     type: 'id'
-        // }, 'related-artists' );
-
-        // relatedReq.on('end', function(result) {
-        //     console.log(result);
-        // });
 app.listen(8080);
